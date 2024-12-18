@@ -29,7 +29,7 @@ weatherForm.addEventListener("submit", async event => {
 async function getWeatherData(city){
 
 	//API call
-	const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+	const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
 	const response = await fetch(apiURL);
 
@@ -44,7 +44,7 @@ async function getWeatherData(city){
 }
 
 function displayWeatherInfo(data){
-
+	console.log(data);
 }
 
 function getWeatherEmoji(weatherId){
