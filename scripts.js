@@ -45,7 +45,6 @@ async function getWeatherData(city){
 
 function displayWeatherInfo(data){
 	
-	//erase
 	console.log(data);
 
 	const {
@@ -53,7 +52,7 @@ function displayWeatherInfo(data){
 		main:{temp, humidity},
 		sys: {sunrise, sunset},
 		timezone: timezone,
-		weather: [{description, id}]
+		weather: [{description, icon}]
 	} = data;
 
 	card.textContent = "";
@@ -64,7 +63,6 @@ function displayWeatherInfo(data){
 	const humidityDisplay = document.createElement("p");
 	const descDisplay = document.createElement("p");
 	const weatherEmoji = document.createElement("p");
-	//test
 	const localTimeDisplay = document.createElement("p");
 	const localTime = getLocalTime(timezone);
 
@@ -72,8 +70,7 @@ function displayWeatherInfo(data){
 	tempDisplay.textContent = `${temp}° C`;
 	humidityDisplay.textContent = `Humidity: ${humidity}%`;
 	descDisplay.textContent = description;
-	weatherEmoji.textContent = getWeatherEmoji(id);
-	//test
+	weatherEmoji.innerHTML = getWeatherEmoji(icon);
 	localTimeDisplay.textContent = `Local time: ${localTime}H`;
 
 	cityDisplay.classList.add("cityDisplay");
@@ -88,7 +85,6 @@ function displayWeatherInfo(data){
 	card.appendChild(humidityDisplay);
 	card.appendChild(descDisplay);
 	card.appendChild(weatherEmoji);
-	//test
 	card.appendChild(localTimeDisplay);
 
 	const isItDay = dayOrNight (sunrise, sunset, localTime, timezone);
@@ -103,26 +99,8 @@ function displayWeatherInfo(data){
 
 }
 
-function getWeatherEmoji(weatherId){
-
-	switch(true){
-		case (weatherId >= 200 && weatherId < 300):
-			return "⛈️";
-		case (weatherId >= 300 && weatherId < 400):
-			return "🌧️";
-		case (weatherId >= 500 && weatherId < 600):
-			return "🌦️";
-		case (weatherId >= 600 && weatherId < 700):
-			return "❄️";
-		case (weatherId >= 700 && weatherId < 800):
-			return "🌫️";
-		case (weatherId === 800):
-			return "☀️";
-		case (weatherId > 800):
-			return "☁️";
-		default:
-			return "❓";
-	}
+function getWeatherEmoji(icon){
+	return `<img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="weather_icon">`;
 }
 
 function displayError(message){
@@ -148,9 +126,6 @@ function getLocalTime(timezone){
     hour12: false
 	}).format(now);
 
-	//testing
-	console.log(localTime);
-
 	return localTime;	
 }
 
@@ -166,10 +141,9 @@ function dayOrNight (sunriseTime, sunsetTime, localTime, timezone){
   const realTime = parseInt(localTimeParts[0]) * 60 + parseInt(localTimeParts[1]);
 
 	if (realTime >= sunTime && realTime < nightTime) {
-			return true;
+		return true;
 	} else {
-			return false;
+		return false;
 	}
-
 }
 
