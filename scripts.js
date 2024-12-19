@@ -65,7 +65,8 @@ function displayWeatherInfo(data){
 	const descDisplay = document.createElement("p");
 	const weatherEmoji = document.createElement("p");
 	//test
-	const localTime = document.createElement("p");
+	const localTimeDisplay = document.createElement("p");
+	const localTime = getLocalTime(timezone);
 
 	cityDisplay.textContent = city;
 	tempDisplay.textContent = `${temp}° C`;
@@ -73,13 +74,14 @@ function displayWeatherInfo(data){
 	descDisplay.textContent = description;
 	weatherEmoji.textContent = getWeatherEmoji(id);
 	//test
-	localTime.textContent = getLocalTime(timezone);
+	localTimeDisplay.textContent = `Local time: ${localTime}H`;
 
 	cityDisplay.classList.add("cityDisplay");
 	tempDisplay.classList.add("tempDisplay");
 	humidityDisplay.classList.add("humidityDisplay");
 	descDisplay.classList.add("descDisplay");
 	weatherEmoji.classList.add("weatherEmoji");
+	localTimeDisplay.classList.add("localTimeDisplay");
 
 	card.appendChild(cityDisplay);
 	card.appendChild(tempDisplay);
@@ -87,7 +89,18 @@ function displayWeatherInfo(data){
 	card.appendChild(descDisplay);
 	card.appendChild(weatherEmoji);
 	//test
-	card.appendChild(localTime);
+	card.appendChild(localTimeDisplay);
+
+	const isItDay = dayOrNight (sunrise, sunset, localTime, timezone);
+	const night = document.querySelector(".card");
+
+	if (!isItDay){
+		night.id = "nightBackground";
+	}
+	else{
+		night.removeAttribute('id')
+	}
+
 }
 
 function getWeatherEmoji(weatherId){
@@ -124,7 +137,7 @@ function displayError(message){
 
 function getLocalTime(timezone){
 
-	const now = new Date();
+	const now = new Date();	
 	const offsetMilliseconds = timezone * 1000;
 
 	now.setTime(now.getTime() + offsetMilliseconds);
@@ -135,5 +148,28 @@ function getLocalTime(timezone){
     hour12: false
 	}).format(now);
 
-	return `Local time: ${localTime}H`;
+	//testing
+	console.log(localTime);
+
+	return localTime;	
 }
+
+function dayOrNight (sunriseTime, sunsetTime, localTime, timezone){
+
+	sunriseTime = new Date(sunriseTime * 1000);
+  sunsetTime = new Date(sunsetTime * 1000);
+
+	const sunTime = sunriseTime.getHours()*60 + sunriseTime.getMinutes() + timezone/60;
+	const nightTime = sunsetTime.getHours()*60 + sunsetTime.getMinutes() + timezone/60;
+
+	const localTimeParts = localTime.split(":");
+  const realTime = parseInt(localTimeParts[0]) * 60 + parseInt(localTimeParts[1]);
+
+	if (realTime >= sunTime && realTime < nightTime) {
+			return true;
+	} else {
+			return false;
+	}
+
+}
+
