@@ -51,7 +51,9 @@ function displayWeatherInfo(data){
 	const {
 		name: city,
 		main:{temp, humidity},
-		weather: [{description, id, icon}]
+		sys: {sunrise, sunset},
+		timezone: timezone,
+		weather: [{description, id}]
 	} = data;
 
 	card.textContent = "";
@@ -62,12 +64,16 @@ function displayWeatherInfo(data){
 	const humidityDisplay = document.createElement("p");
 	const descDisplay = document.createElement("p");
 	const weatherEmoji = document.createElement("p");
+	//test
+	const localTime = document.createElement("p");
 
 	cityDisplay.textContent = city;
 	tempDisplay.textContent = `${temp}° C`;
 	humidityDisplay.textContent = `Humidity: ${humidity}%`;
 	descDisplay.textContent = description;
 	weatherEmoji.textContent = getWeatherEmoji(id);
+	//test
+	localTime.textContent = getLocalTime(timezone);
 
 	cityDisplay.classList.add("cityDisplay");
 	tempDisplay.classList.add("tempDisplay");
@@ -80,6 +86,8 @@ function displayWeatherInfo(data){
 	card.appendChild(humidityDisplay);
 	card.appendChild(descDisplay);
 	card.appendChild(weatherEmoji);
+	//test
+	card.appendChild(localTime);
 }
 
 function getWeatherEmoji(weatherId){
@@ -112,4 +120,20 @@ function displayError(message){
 	card.textContent = "";
 	card.style.display = "flex";
 	card.appendChild(errorDisplay);
+}
+
+function getLocalTime(timezone){
+
+	const now = new Date();
+	const offsetMilliseconds = timezone * 1000;
+
+	now.setTime(now.getTime() + offsetMilliseconds);
+
+	const localTime = new Intl.DateTimeFormat('en-US', {
+		hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+	}).format(now);
+
+	return `Local time: ${localTime}H`;
 }
