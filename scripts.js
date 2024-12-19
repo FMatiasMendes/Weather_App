@@ -17,8 +17,8 @@ weatherForm.addEventListener("submit", async event => {
 			displayWeatherInfo(weatherData);
 		}
 		catch(error){
-			console.error(error);
-			displayError(error);
+			const errorMessage = error.message.replace('Error', "");
+            displayError(errorMessage);
 		}
 	}
 	else{
@@ -35,8 +35,8 @@ async function getWeatherData(city){
 
 	console.log(response);
 
-	if(!response){
-		throw new Error("Could not fetch weather data");
+	if(!response.ok){
+		throw new Error(`City not found: ${city}`);
 	}
 
 	return await response.json();
